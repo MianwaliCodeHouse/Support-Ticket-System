@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tickets;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
@@ -12,7 +13,8 @@ class TicketsController extends Controller
 {
     public function index()
     {
-        return view('dashboard.tickets.index');
+        $students = User::role('student')->get();
+        return view('dashboard.tickets.index', ['students' => $students]);
     }
 
     public function store(Request $request)
@@ -40,11 +42,17 @@ class TicketsController extends Controller
         if ($id) {
             $query->where('user_id', $id);
         }
-
+        // Check if a student filter is applied
+        if ($request->has('student_filter') && $request->student_filter != '') {
+            $query->where('user_id', $request->student_filter);
+        }
         return DataTables::of($query)
             ->addIndexColumn() // This will automatically add the index column
             ->addColumn('student_name', function ($ticket) {
                 return $ticket->user ? $ticket->user->name : 'N/A';
+            })
+            ->addColumn('created_at', function ($ticket) {
+                return $ticket->created_at ? \Carbon\Carbon::parse($ticket->created_at)->format('d F Y') : 'N/A';
             })
             ->addColumn('status', function ($ticket) {
                 if ($ticket->status == 'pending') {
@@ -66,18 +74,25 @@ class TicketsController extends Controller
                     if ($ticket->status == 'pending') {
 
 
-                        return '<button onclick="acceptTicket(' . $ticket->id . ')" class="bg-slate-700 text-white py-2 px-4 rounded">Accept</button>
+                        return '<button onclick="acceptTicket(' . $ticket->id . ')" class="text-sm bg-slate-700 text-white py-2 px-4 rounded">Accept</button>
                     
                     <button class="bg-red-500 text-white py-2 px-4 rounded ml-2" onclick="destroy(' . $ticket->id . ')">Delete</button>';
                     } else {
-                        return '<a href="' . route('ticket.details', $ticket->uuid) . '" class="bg-slate-700 text-white py-2 px-4 rounded">View Details</a>
+                        return '<a href="' . route('ticket.details', $ticket->uuid) . '" class="text-sm bg-slate-700 text-white py-2 px-4 rounded">View Details</a>
                     
-                    <button class="bg-red-500 text-white py-2 px-4 rounded ml-2" onclick="destroy(' . $ticket->id . ')">Delete</button>';
+                    <button class="text-sm bg-red-500 text-white py-2 px-4 rounded ml-2" onclick="destroy(' . $ticket->id . ')">Delete</button>';
                     }
                 } else {
-                    return '<a href="' . route('ticket.details', $ticket->uuid) . '" class="bg-slate-700 text-white py-2 px-4 rounded">View Details</a>
+                    if ($ticket->status == 'pending') {
+                        return '<button class="bg-slate-700 text-white py-2 px-4 rounded ml-2" onclick="openEditModel(' . htmlspecialchars(json_encode($ticket)) . ')">Edit</button>
+                    <button class="bg-red-500 text-white py-2 px-4 rounded ml-2" onclick="destroy(' . $ticket->id . ')">Delete</button>';
+                    }else{
+
+                    
+                    return '<a href="' . route('ticket.details', $ticket->uuid) . '" class="text-sm bg-slate-700 text-white py-2 px-4 rounded">View Details</a>
                     <button class="bg-slate-700 text-white py-2 px-4 rounded ml-2" onclick="openEditModel(' . htmlspecialchars(json_encode($ticket)) . ')">Edit</button>
                     <button class="bg-red-500 text-white py-2 px-4 rounded ml-2" onclick="destroy(' . $ticket->id . ')">Delete</button>';
+                }
                 }
             })
             ->rawColumns(['status', 'actions'])

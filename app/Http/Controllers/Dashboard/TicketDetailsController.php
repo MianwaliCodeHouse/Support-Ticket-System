@@ -25,15 +25,15 @@ class TicketDetailsController extends Controller
             'message' => 'required'
         ]);
         try {
-           TicketDetails::create([
+           $message=TicketDetails::create([
                 'user_id' => Auth::user()->id,
                 'ticket_id' => $request->ticket_id,
                 'message' => $request->message,
 
             ]);
-            return 1;
+            return response()->json(['status'=>1,'data'=>$message]);
         } catch (\Throwable $th) {
-            return $th;
+            return response()->json(['status'=>0,'data'=>$th]);
         }
     }
 
@@ -43,9 +43,9 @@ class TicketDetailsController extends Controller
             Tickets::find($id)->update([
                 'status' => 'closed'
             ]);
-            return 1;
+            return response()->json(['status'=>1,'url'=>route('tickets.index')]);
         } catch (\Throwable $th) {
-            return $th;
+            return response()->json(["status"=>0,'error'=>$th]);
         }
     }
 }

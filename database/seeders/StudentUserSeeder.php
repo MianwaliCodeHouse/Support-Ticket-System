@@ -18,22 +18,22 @@ class StudentUserSeeder extends Seeder
         $studentRole = Role::firstOrCreate(['name' => 'student']);
         
         User::create([
-            'name' => 'Student User',
+            'name' => 'Yasir',
             'email' => 'student@example.com',
             'password' => Hash::make('12345678'),
         ])->assignRole($studentRole);
         User::create([
-            'name' => 'Student User',
+            'name' => 'Nasir',
             'email' => 'student1@example.com',
             'password' => Hash::make('12345678'),
         ])->assignRole($studentRole);
         User::create([
-            'name' => 'Student User',
+            'name' => 'Kashif',
             'email' => 'student2@example.com',
             'password' => Hash::make('12345678'),
         ])->assignRole($studentRole);
         User::create([
-            'name' => 'Student User',
+            'name' => 'Sultan',
             'email' => 'student3@example.com',
             'password' => Hash::make('12345678'),
         ])->assignRole($studentRole);

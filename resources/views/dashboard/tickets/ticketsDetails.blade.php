@@ -14,31 +14,39 @@
 
                     <div class="container mx-auto p-4">
 
+
                         <!-- Message Input Area -->
                         <div class="mb-4 p-4 bg-white rounded shadow">
-                            <textarea placeholder="Type your message here..." class="w-full p-2 border border-gray-300 rounded-md" rows="3"
-                                id="message"></textarea>
-                            <div class="flex justify-end mt-2">
-                                <button class="px-4 py-2 mb-3 text-white bg-blue-500 rounded hover:bg-blue-700"
-                                    onclick="addMessage()">
-                                    <div class="flex items-center justify-center" id="submitMessageBtn">
-                                        @if (auth()->user()->hasRole('admin'))
-                                        Add
-                                        Response   
-                                        @else
-                                        Add
-                                        Message
-                                        @endif
-                                    </div>
-                            </div>
-
+                            @if ($ticket->status != 'closed')
+                                <textarea placeholder="Type your message here..." class="w-full p-2 border border-gray-300 rounded-md" rows="3"
+                                    id="message"></textarea>
+                                <div class="flex justify-end mt-2">
+                                    <button class="px-4 py-2 mb-3 text-white bg-blue-500 rounded hover:bg-blue-700"
+                                        onclick="addMessage()">
+                                        <div class="flex items-center justify-center" id="submitMessageBtn">
+                                            @if (auth()->user()->hasRole('admin'))
+                                                Add
+                                                Response
+                                            @else
+                                                Add
+                                                Message
+                                            @endif
+                                        </div>
+                                </div>
+                            @endif
                             <!-- Messages Display Area -->
-                            <div class="bg-white rounded shadow p-4 mb-4 max-h-96 overflow-y-auto">
+                            <div class="bg-white rounded shadow p-4 mb-4 max-h-96 overflow-y-auto" id="messagesBox">
                                 <!-- Student Message -->
                                 <div class="mb-4">
                                     <div class="flex items-start">
                                         <div class="bg-blue-100 text-blue-800 p-2 rounded-lg">
-                                            <strong>{{ $ticket->user->name }}:</strong> {{ $ticket->description }}.
+                                            <strong>
+                                                @if (auth()->user()->hasRole('student'))
+                                                    You:
+                                                @else
+                                                    {{ $ticket->user->name }}:
+                                                @endif
+                                            </strong> {{ $ticket->description }}.
                                         </div>
                                     </div>
                                 </div>
@@ -80,13 +88,17 @@
                             </div>
 
                             @if (auth()->user()->hasRole('student'))
-                                <!-- Close Ticket Button -->
-                                <div class="flex justify-end">
-                                    <button class="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-700" onclick="closeTicket({{$ticket->id}})">Close
-                                        Ticket</button>
-                                </div>
+                                @if ($ticket->status != 'closed')
+                                    <!-- Close Ticket Button -->
+                                    <div class="flex justify-end">
+                                        <button class="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-700"
+                                            onclick="closeTicket({{ $ticket->id }})">Close
+                                            Ticket</button>
+                                    </div>
+                                @endif
                             @endif
                         </div>
+
 
                     </div>
                 </div>
@@ -114,7 +126,7 @@
                         ticket_id: ticket_id
                     },
                     success: function(response) {
-                        if (response == 1) {
+                        if (response.status == 1) {
                             Toastify({
                                 text: "Your Query has been added",
                                 duration: 2000
@@ -124,6 +136,27 @@
                             setTimeout(() => {
                                 $("#submitMessageBtn").html(`Added Message`)
                             }, 1000);
+                            @if (auth()->user()->hasRole('admin'))
+                                $('#messagesBox').append(`<div class="mb-4 text-right">
+                                            <div class="flex items-start justify-end">
+                                                <div class="bg-green-100 text-green-800 p-2 rounded-lg">
+                                                    <strong>
+                                                        You: 
+                                                    </strong> ${response.data.message}
+                                                </div>
+                                            </div>
+                                        </div>`)
+                            @else
+                                $('#messagesBox').append(` <div class="mb-4">
+                                            <div class="flex items-start">
+                                                <div class="bg-blue-100 text-blue-800 p-2 rounded-lg">
+                                                    <strong>
+                                                        You:
+                                                    </strong> ${response.data.message}
+                                                </div>
+                                            </div>
+                                        </div>`)
+                            @endif
                         }
                     },
                     error: function(error) {
@@ -148,12 +181,14 @@
                             url: "{{ route('ticket.close', '') }}/" + id,
                             type: "GET",
                             success: function(response) {
-                                if (response == 1) {
+                                if (response.status == 1) {
                                     Swal.fire({
                                         title: "Closed Token!",
                                         icon: "success"
                                     });
-
+                                    setTimeout(() => {  
+                                        window.location.href=response.url;
+                                    }, 1000);
                                 }
                             }
                         })
