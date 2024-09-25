@@ -20,7 +20,7 @@
                 ticket_id: ticket_id
             },
             success: function(response) {
-                if (response.status == 1) {
+                if (response.status == 200) {
                     Toastify({
                         text: "Your Query has been added",
                         duration: 2000
@@ -28,10 +28,10 @@
                     $('#message').val('');
                     $("#submitMessageBtn").html(`Added`)
                     setTimeout(() => {
-                        $("#submitMessageBtn").html(`Add Message`)
+                        $("#submitMessageBtn").html(`Add Response`)
                     }, 1000);
-                    @if (auth()->user()->hasRole('admin'))
-                        $('#messagesBox').append(`<div class="mb-4 text-right">
+
+                    $('#messagesBox').append(`<div class="mb-4 text-right">
                                             <div class="flex items-start justify-end">
                                                 <div class="bg-green-100 text-green-800 p-2 rounded-lg">
                                                     <strong>
@@ -39,18 +39,8 @@
                                                     </strong> ${response.data.message}
                                                 </div>
                                             </div>
-                                        </div>`)
-                    @else
-                        $('#messagesBox').append(` <div class="mb-4">
-                                            <div class="flex items-start">
-                                                <div class="bg-blue-100 text-blue-800 p-2 rounded-lg">
-                                                    <strong>
-                                                        You:
-                                                    </strong> ${response.data.message}
-                                                </div>
-                                            </div>
-                                        </div>`)
-                    @endif
+                    </div>`)
+
                 }
             },
             error: function(error) {
@@ -75,7 +65,7 @@
                     url: "{{ route('ticket.close', '') }}/" + id,
                     type: "GET",
                     success: function(response) {
-                        if (response.status == 1) {
+                        if (response.status == 200) {
                             Swal.fire({
                                 title: "Closed Token!",
                                 icon: "success"

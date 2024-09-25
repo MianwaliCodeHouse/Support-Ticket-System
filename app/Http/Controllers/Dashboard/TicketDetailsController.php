@@ -15,7 +15,11 @@ class TicketDetailsController extends Controller
         $ticket=Ticket::where('uuid',$id)->first();
         $ticket_details=TicketDetail::where('ticket_id',$ticket->id)->get();
         $ticket = Ticket::find($ticket->id);
-        return view('dashboard.tickets.ticketsDetails', ["ticket" => $ticket,'ticket_details'=>$ticket_details]);
+        if (auth()->user()->hasRole('admin')) {
+        return view('adminDashboard.tickets.ticketsDetails', ["ticket" => $ticket,'ticket_details'=>$ticket_details]);
+        }else{
+        return view('userDashboard.tickets.ticketsDetails', ["ticket" => $ticket,'ticket_details'=>$ticket_details]);  
+        }
     }
 
     public function store(Request $request)
@@ -31,9 +35,9 @@ class TicketDetailsController extends Controller
                 'message' => $request->message,
 
             ]);
-            return response()->json(['status'=>1,'data'=>$message]);
+            return response()->json(['status'=>200,'data'=>$message]);
         } catch (\Throwable $th) {
-            return response()->json(['status'=>0,'data'=>$th]);
+            return response()->json(['status'=>400,'data'=>$th]);
         }
     }
 
@@ -43,9 +47,9 @@ class TicketDetailsController extends Controller
             Ticket::find($id)->update([
                 'status' => 'closed'
             ]);
-            return response()->json(['status'=>1,'url'=>route('tickets.index')]);
+            return response()->json(['status'=>200,'url'=>route('tickets.index')]);
         } catch (\Throwable $th) {
-            return response()->json(["status"=>0,'error'=>$th]);
+            return response()->json(["status"=>400,'error'=>$th]);
         }
     }
 }

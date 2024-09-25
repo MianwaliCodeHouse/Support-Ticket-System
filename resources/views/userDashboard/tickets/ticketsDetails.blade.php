@@ -104,7 +104,8 @@
                 </div>
             </div>
         </div>
+        @push('custom-scripts')
+            @include('userDashboard.tickets.includes.ticketDetails_script')
+        @endpush
 
-        @include('dashboard.tickets.includes.ticketDetails_script')
-        
 </x-app-layout>

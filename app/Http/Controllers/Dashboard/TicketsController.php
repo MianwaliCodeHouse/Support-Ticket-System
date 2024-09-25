@@ -13,8 +13,12 @@ class TicketsController extends Controller
 {
     public function index()
     {
+        if (auth()->user()->hasRole('admin')) {
         $students = User::role('student')->get();
-        return view('dashboard.tickets.index', ['students' => $students]);
+        return view('adminDashboard.tickets.index', ['students' => $students]);
+        }else{
+            return view('userDashboard.tickets.index');  
+        }
     }
     
     public function store(Request $request)
@@ -29,9 +33,9 @@ class TicketsController extends Controller
                 'title' => $request->title,
                 'description' => $request->description,
             ]);
-            return 1;
+            return response()->json(["status"=>200]);
         } catch (\Throwable $th) {
-            return $th;
+            return response()->json(["status"=>400,'error'=>$th]);
         }
     }
 
@@ -55,15 +59,15 @@ class TicketsController extends Controller
             })
             ->addColumn('status', function ($ticket) {
                 if ($ticket->status == 'pending') {
-
-
-                    return '<span class="bg-yellow-500 text-white text-xs font-semibold px-2.5 py-0.5 rounded-full">Pending</span>';
+                    return '<span class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
+                                                Pending
+                            </span>';
                 } elseif ($ticket->status == 'in-progress') {
-                    return '<span class="bg-blue-500 text-white text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                    return '<span class="bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
                                                 In Progress
                             </span>';
                 } elseif ($ticket->status == 'closed') {
-                    return ' <span class="bg-gray-500 text-white text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                    return ' <span class="bg-gray-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
                                                 Closed
                             </span>';
                 }
@@ -101,9 +105,9 @@ class TicketsController extends Controller
     {
         try {
             Ticket::find($id)->delete();
-            return 1;
+            return response()->json(["status"=>200]);
         } catch (\Throwable $th) {
-            return $th;
+            return response()->json(["status"=>400,'error'=>$th]);
         }
     }
     public function update(Request $request, $id)
@@ -117,7 +121,7 @@ class TicketsController extends Controller
                 'title' => $request->title,
                 'description' => $request->description,
             ]);
-            return 1;
+            return response()->json(["status"=>200]);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
@@ -128,9 +132,9 @@ class TicketsController extends Controller
             Ticket::find($id)->update([
                 'status' => 'in-progress'
             ]);
-            return 1;
+            return response()->json(["status"=>200]);
         } catch (\Throwable $th) {
-            return $th;
+            return response()->json(["status"=>400,'error'=>$th]);
         }
     }
 }
