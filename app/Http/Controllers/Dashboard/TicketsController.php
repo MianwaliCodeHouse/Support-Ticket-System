@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\Tickets;
+use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +16,7 @@ class TicketsController extends Controller
         $students = User::role('student')->get();
         return view('dashboard.tickets.index', ['students' => $students]);
     }
-
+    
     public function store(Request $request)
     {
         $request->validate([
@@ -24,8 +24,7 @@ class TicketsController extends Controller
             'description' => 'required'
         ]);
         try {
-
-            Tickets::create([
+            Ticket::create([
                 'user_id' => Auth::user()->id,
                 'title' => $request->title,
                 'description' => $request->description,
@@ -35,10 +34,10 @@ class TicketsController extends Controller
             return $th;
         }
     }
+
     public function data(Request $request, $id = null)
     {
-        $query = Tickets::select('*');
-
+        $query = Ticket::select(['id','title','uuid','description','status','created_at','user_id']);
         if ($id) {
             $query->where('user_id', $id);
         }
@@ -78,7 +77,7 @@ class TicketsController extends Controller
                     
                     <button class="bg-red-500 text-white py-2 px-4 rounded ml-2" onclick="destroy(' . $ticket->id . ')">Delete</button>';
                     } else {
-                        return '<a href="' . route('ticket.details', $ticket->uuid) . '" class="text-sm bg-slate-700 text-white py-2 px-4 rounded">View Details</a>
+                        return '<a href="' . route('ticket-details.show', $ticket->uuid) . '" class="text-sm bg-slate-700 text-white py-2 px-4 rounded">View Details</a>
                     
                     <button class="text-sm bg-red-500 text-white py-2 px-4 rounded ml-2" onclick="destroy(' . $ticket->id . ')">Delete</button>';
                     }
@@ -89,7 +88,7 @@ class TicketsController extends Controller
                     }else{
 
                     
-                    return '<a href="' . route('ticket.details', $ticket->uuid) . '" class="text-sm bg-slate-700 text-white py-2 px-4 rounded">View Details</a>
+                    return '<a href="' . route('ticket-details.show', $ticket->uuid) . '" class="text-sm bg-slate-700 text-white py-2 px-4 rounded">View Details</a>
                     <button class="bg-slate-700 text-white py-2 px-4 rounded ml-2" onclick="openEditModel(' . htmlspecialchars(json_encode($ticket)) . ')">Edit</button>
                     <button class="bg-red-500 text-white py-2 px-4 rounded ml-2" onclick="destroy(' . $ticket->id . ')">Delete</button>';
                 }
@@ -101,7 +100,7 @@ class TicketsController extends Controller
     public function destroy($id)
     {
         try {
-            Tickets::find($id)->delete();
+            Ticket::find($id)->delete();
             return 1;
         } catch (\Throwable $th) {
             return $th;
@@ -114,7 +113,7 @@ class TicketsController extends Controller
             'description' => 'required'
         ]);
         try {
-            Tickets::findOrFail($id)->update([
+            Ticket::findOrFail($id)->update([
                 'title' => $request->title,
                 'description' => $request->description,
             ]);
@@ -126,7 +125,7 @@ class TicketsController extends Controller
     public function accept($id)
     {
         try {
-            Tickets::find($id)->update([
+            Ticket::find($id)->update([
                 'status' => 'in-progress'
             ]);
             return 1;

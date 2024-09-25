@@ -3,18 +3,18 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\TicketDetails;
-use App\Models\Tickets;
+use App\Models\TicketDetail;
+use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class TicketDetailsController extends Controller
 {
-    public function index($id)
+    public function show($id)
     {
-        $ticket=Tickets::where('uuid',$id)->first();
-        $ticket_details=TicketDetails::where('ticket_id',$ticket->id)->get();
-        $ticket = Tickets::find($ticket->id);
+        $ticket=Ticket::where('uuid',$id)->first();
+        $ticket_details=TicketDetail::where('ticket_id',$ticket->id)->get();
+        $ticket = Ticket::find($ticket->id);
         return view('dashboard.tickets.ticketsDetails', ["ticket" => $ticket,'ticket_details'=>$ticket_details]);
     }
 
@@ -25,7 +25,7 @@ class TicketDetailsController extends Controller
             'message' => 'required'
         ]);
         try {
-           $message=TicketDetails::create([
+           $message=TicketDetail::create([
                 'user_id' => Auth::user()->id,
                 'ticket_id' => $request->ticket_id,
                 'message' => $request->message,
@@ -40,7 +40,7 @@ class TicketDetailsController extends Controller
     public function close($id)
     {
         try {
-            Tickets::find($id)->update([
+            Ticket::find($id)->update([
                 'status' => 'closed'
             ]);
             return response()->json(['status'=>1,'url'=>route('tickets.index')]);

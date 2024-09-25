@@ -54,6 +54,8 @@
             </div>
             <form id="editTicketForm" class="p-4">
                 <input type="number" name="id" id="editId" hidden>
+                <input type="hidden" name="_method" value="PUT"> <!-- Hidden input for method spoofing -->
+
                 <label for="editTitle" class="block text-sm font-medium text-gray-700">Title:</label>
                 <input type="text" id="editTitle" name="title"
                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500" />

@@ -13,7 +13,7 @@
         let message = $('#message').val();
         let ticket_id = {{ $ticket->id }}
         $.ajax({
-            url: "{{ route('ticket.message.store') }}",
+            url: "{{ route('ticket-details.store') }}",
             type: "POST",
             data: {
                 message: message,
@@ -28,7 +28,7 @@
                     $('#message').val('');
                     $("#submitMessageBtn").html(`Added`)
                     setTimeout(() => {
-                        $("#submitMessageBtn").html(`Added Message`)
+                        $("#submitMessageBtn").html(`Add Message`)
                     }, 1000);
                     @if (auth()->user()->hasRole('admin'))
                         $('#messagesBox').append(`<div class="mb-4 text-right">

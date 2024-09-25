@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid')->nullable();
-            $table->unsignedBigInteger("user_id")->nullable();
+            $table->string('uuid');
+            $table->unsignedBigInteger("user_id");
             $table->string("title");
-            $table->text("description");
+            $table->mediumText("description");
             $table->string("status")->default('pending');
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');

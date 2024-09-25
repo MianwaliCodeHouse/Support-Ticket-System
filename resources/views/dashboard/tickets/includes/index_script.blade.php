@@ -10,7 +10,7 @@
          serverSide: true,
          @if (auth()->user()->hasRole('admin'))
              ajax: {
-                 url: '{{ route('tickets.data') }}',
+                 url: "{{ route('tickets.data') }}",
                  data: function(d) {
                      return $.extend({}, d, {
                          student_filter: $('#studentFilter').val()
@@ -18,7 +18,7 @@
                  }
              },
          @else
-             ajax: '{{ route('tickets.data', auth()->user()->id) }}',
+             ajax: "{{ route('tickets.data', auth()->user()->id) }}",
          @endif
          columns: [{
                  data: null,
@@ -80,7 +80,7 @@
              if (result.isConfirmed) {
                  console.log(id);
                  $.ajax({
-                     url: "{{ route('ticket.destroy', '') }}/" + id,
+                     url: "{{ route('tickets.destroy', '') }}/" + id,
                      type: "DELETE",
                      success: function(response) {
                          if (response == 1) {
@@ -193,8 +193,8 @@
              var formData2 = new FormData($('#editTicketForm')[0]);
 
              $.ajax({
-                 url: '{{ route('ticket.update', '') }}/' + id,
-                 type: 'POST',
+                 url: '{{ route('tickets.update', '') }}/' + id,
+                 type: 'post',
                  data: formData2,
                  contentType: false,
                  processData: false,
