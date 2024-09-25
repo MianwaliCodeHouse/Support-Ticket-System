@@ -1,15 +1,10 @@
 <x-app-layout>
 
-    <!-- Include DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Tickets') }}
         </h2>
     </x-slot>
-
-
-
 
 
     <!-- Create Ticket Modal -->

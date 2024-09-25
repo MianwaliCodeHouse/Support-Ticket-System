@@ -39,7 +39,34 @@ class TicketsController extends Controller
         }
     }
 
-    public function data(Request $request, $id = null)
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'title' => 'required|max:255',
+            'description' => 'required'
+        ]);
+        try {
+            Ticket::findOrFail($id)->update([
+                'title' => $request->title,
+                'description' => $request->description,
+            ]);
+            return response()->json(["status"=>200]);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => $th->getMessage()], 500);
+        }
+    }
+    
+    public function destroy($id)
+    {
+        try {
+            Ticket::find($id)->delete();
+            return response()->json(["status"=>200]);
+        } catch (\Throwable $th) {
+            return response()->json(["status"=>400,'error'=>$th]);
+        }
+    }
+    
+    public function dataTable(Request $request, $id = null)
     {
         $query = Ticket::select(['id','title','uuid','description','status','created_at','user_id']);
         if ($id) {
@@ -100,31 +127,6 @@ class TicketsController extends Controller
             })
             ->rawColumns(['status', 'actions'])
             ->make(true);
-    }
-    public function destroy($id)
-    {
-        try {
-            Ticket::find($id)->delete();
-            return response()->json(["status"=>200]);
-        } catch (\Throwable $th) {
-            return response()->json(["status"=>400,'error'=>$th]);
-        }
-    }
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'title' => 'required|max:255',
-            'description' => 'required'
-        ]);
-        try {
-            Ticket::findOrFail($id)->update([
-                'title' => $request->title,
-                'description' => $request->description,
-            ]);
-            return response()->json(["status"=>200]);
-        } catch (\Throwable $th) {
-            return response()->json(['error' => $th->getMessage()], 500);
-        }
     }
     public function accept($id)
     {

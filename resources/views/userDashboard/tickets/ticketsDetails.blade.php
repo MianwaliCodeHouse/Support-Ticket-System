@@ -1,5 +1,7 @@
 <x-app-layout>
+    @push('custom_stylesheets')
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    @endpush
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ $ticket->title }}
@@ -105,6 +107,7 @@
             </div>
         </div>
         @push('custom-scripts')
+            <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
             @include('userDashboard.tickets.includes.ticketDetails_script')
         @endpush
 

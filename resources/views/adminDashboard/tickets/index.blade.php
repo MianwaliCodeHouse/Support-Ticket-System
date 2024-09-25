@@ -1,15 +1,5 @@
 <x-app-layout>
-    <style>
-        .dataTables_wrapper .dataTables_filter {
-            margin-bottom: 10px;
-        }
-
-        .dataTables_wrapper .dataTables_length select {
-            min-width: 80px;
-        }
-    </style>
-
-    
+      
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Tickets') }}

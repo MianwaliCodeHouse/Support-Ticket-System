@@ -17,7 +17,7 @@ Route::middleware('auth')->group(function () {
 
     // tickets routes 
     Route::resource('tickets', TicketsController::class)->except('show');
-    Route::get('/tickets/data/{id?}', [TicketsController::class, 'data'])->name('tickets.data');
+    Route::get('/tickets/data/{id?}', [TicketsController::class, 'dataTable'])->name('tickets.data');
     Route::get('/ticket/accept/{id}', [TicketsController::class, 'accept'])->name('ticket.accept');
 
 
