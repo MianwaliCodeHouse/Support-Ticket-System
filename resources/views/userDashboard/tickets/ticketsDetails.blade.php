@@ -4,19 +4,15 @@
     @endpush
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ $ticket->title }}
+            {{ $ticket->title ? $ticket->title : '' }}
         </h2>
-
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-
                     <div class="container mx-auto p-4">
-
-
                         <!-- Message Input Area -->
                         <div class="mb-4 p-4 bg-white rounded shadow">
                             @if ($ticket->status != 'closed')
@@ -46,9 +42,9 @@
                                                 @if (auth()->user()->hasRole('student'))
                                                     You:
                                                 @else
-                                                    {{ $ticket->user->name }}:
+                                                    {{ $ticket->user->name ? $ticket->user->name : '' }}:
                                                 @endif
-                                            </strong> {{ $ticket->description }}.
+                                            </strong> {{ $ticket->description ? $ticket->description : '' }}.
                                         </div>
                                     </div>
                                 </div>

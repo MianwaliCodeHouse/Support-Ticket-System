@@ -4,9 +4,8 @@
     @endpush
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ $ticket->title }}
+            {{ $ticket->title ? $ticket->title : '' }}
         </h2>
-
     </x-slot>
 
     <div class="py-12">
@@ -46,9 +45,9 @@
                                                 @if (auth()->user()->hasRole('student'))
                                                     You:
                                                 @else
-                                                    {{ $ticket->user->name }}:
+                                                    {{ $ticket->user->name ? $ticket->user->name : '' }}:
                                                 @endif
-                                            </strong> {{ $ticket->description }}.
+                                            </strong> {{ $ticket->description ? $ticket->description : '' }}.
                                         </div>
                                     </div>
                                 </div>
