@@ -57,11 +57,7 @@
 
      });
 
-     $.ajaxSetup({
-         headers: {
-             'X-CSRF-TOKEN': "{{ csrf_token() }}"
-         }
-     });
+    
 
      function destroy(id) {
          Swal.fire({
@@ -78,6 +74,9 @@
                  $.ajax({
                      url: "{{ route('tickets.destroy', '') }}/" + id,
                      type: "DELETE",
+                     headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
                      success: function(response) {
                          if (response.status == 200) {
                              Swal.fire({

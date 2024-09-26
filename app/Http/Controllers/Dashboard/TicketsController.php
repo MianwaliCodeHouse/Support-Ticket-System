@@ -14,13 +14,13 @@ class TicketsController extends Controller
     public function index()
     {
         if (auth()->user()->hasRole('admin')) {
-        $students = User::role('student')->get();
-        return view('adminDashboard.tickets.index', ['students' => $students]);
-        }else{
-            return view('userDashboard.tickets.index');  
+            $students = User::role('student')->get();
+            return view('adminDashboard.tickets.index', ['students' => $students]);
+        } else {
+            return view('userDashboard.tickets.index');
         }
     }
-    
+
     public function store(Request $request)
     {
         $request->validate([
@@ -33,9 +33,9 @@ class TicketsController extends Controller
                 'title' => $request->title,
                 'description' => $request->description,
             ]);
-            return response()->json(["status"=>200]);
+            return response()->json(["status" => 200]);
         } catch (\Throwable $th) {
-            return response()->json(["status"=>400,'error'=>$th]);
+            return response()->json(["status" => 400, 'error' => $th]);
         }
     }
 
@@ -50,25 +50,25 @@ class TicketsController extends Controller
                 'title' => $request->title,
                 'description' => $request->description,
             ]);
-            return response()->json(["status"=>200]);
+            return response()->json(["status" => 200]);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
     }
-    
+
     public function destroy($id)
     {
         try {
             Ticket::find($id)->delete();
-            return response()->json(["status"=>200]);
+            return response()->json(["status" => 200]);
         } catch (\Throwable $th) {
-            return response()->json(["status"=>400,'error'=>$th]);
+            return response()->json(["status" => 400, 'error' => $th]);
         }
     }
-    
+
     public function dataTable(Request $request, $id = null)
     {
-        $query = Ticket::select(['id','title','uuid','description','status','created_at','user_id']);
+        $query = Ticket::select(['id', 'title', 'uuid', 'description', 'status', 'created_at', 'user_id']);
         if ($id) {
             $query->where('user_id', $id);
         }
@@ -116,13 +116,13 @@ class TicketsController extends Controller
                     if ($ticket->status == 'pending') {
                         return '<button class="bg-slate-700 text-white py-2 px-4 rounded ml-2" onclick="openEditModel(' . htmlspecialchars(json_encode($ticket)) . ')">Edit</button>
                     <button class="bg-red-500 text-white py-2 px-4 rounded ml-2" onclick="destroy(' . $ticket->id . ')">Delete</button>';
-                    }else{
+                    } else {
 
-                    
-                    return '<a href="' . route('ticket-details.show', $ticket->uuid) . '" class="text-sm bg-slate-700 text-white py-2 px-4 rounded">View Details</a>
+
+                        return '<a href="' . route('ticket-details.show', $ticket->uuid) . '" class="text-sm bg-slate-700 text-white py-2 px-4 rounded">View Details</a>
                     <button class="bg-slate-700 text-white py-2 px-4 rounded ml-2" onclick="openEditModel(' . htmlspecialchars(json_encode($ticket)) . ')">Edit</button>
                     <button class="bg-red-500 text-white py-2 px-4 rounded ml-2" onclick="destroy(' . $ticket->id . ')">Delete</button>';
-                }
+                    }
                 }
             })
             ->rawColumns(['status', 'actions'])
@@ -134,9 +134,9 @@ class TicketsController extends Controller
             Ticket::find($id)->update([
                 'status' => 'in-progress'
             ]);
-            return response()->json(["status"=>200]);
+            return response()->json(["status" => 200]);
         } catch (\Throwable $th) {
-            return response()->json(["status"=>400,'error'=>$th]);
+            return response()->json(["status" => 400, 'error' => $th]);
         }
     }
 }

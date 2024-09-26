@@ -1,5 +1,6 @@
 import './bootstrap';
-import Swal from 'sweetalert2';
+import 'laravel-datatables-vite';
+// import Swal from 'sweetalert2';
 
 
 import Alpine from 'alpinejs';

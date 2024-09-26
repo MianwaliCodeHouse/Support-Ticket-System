@@ -15,6 +15,7 @@
                 <span class="close cursor-pointer text-gray-500" data-modal="createTicketModal">&times;</span>
             </div>
             <form id="createTicketForm" class="p-4">
+                @csrf
                 <label for="createTitle" class="block text-sm font-medium text-gray-700">Title:</label>
                 <input type="text" id="createTitle" name="title" required
                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500" />
@@ -39,6 +40,7 @@
                 <span class="close cursor-pointer text-gray-500" data-modal="editTicketModal">&times;</span>
             </div>
             <form id="editTicketForm" class="p-4">
+                @csrf
                 <input type="number" name="id" id="editId" hidden>
                 <input type="hidden" name="_method" value="PUT"> <!-- Hidden input for method spoofing -->
 
